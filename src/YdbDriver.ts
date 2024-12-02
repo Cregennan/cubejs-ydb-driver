@@ -11,7 +11,7 @@ import {
     TableQueryResult,
 } from '@cubejs-backend/base-driver';
 import {PassThrough} from "stream";
-import {AnonymousAuthService, Driver, ResultSet, RowType, Ydb} from "ydb-sdk";
+import {Driver, getCredentialsFromEnv, ResultSet, RowType, Ydb} from "ydb-sdk";
 import {YdbDriverQuery} from './YdbDriverQuery';
 import Syntax = Ydb.Query.Syntax;
 import {fromPrimitiveYqlType, restoreStringFromUnicode} from "./utils";
@@ -22,10 +22,6 @@ export type YdbDriverConfiguration = {
     endpoint: string
     database: string
 }
-
-export type QueryInSessionConfiguration = {
-    text : string;
-};
 
 export class YdbDriver<Config extends YdbDriverConfiguration = YdbDriverConfiguration>
     extends BaseDriver implements DriverInterface {
@@ -40,19 +36,15 @@ export class YdbDriver<Config extends YdbDriverConfiguration = YdbDriverConfigur
     public constructor(config: YdbDriverConfiguration) {
         super();
 
-        const authService = new AnonymousAuthService();
+        const authService = getCredentialsFromEnv();
         this.config = config;
         this.driver = new Driver({connectionString: `${config.endpoint}?database=${config.database}`, authService: authService});
     }
 
-    public async stream(table: string, values: unknown[], options: StreamOptions): Promise<StreamTableData> {
-        return {
-            release(): Promise<void> {
-                return Promise.resolve(undefined);
-            },
-            rowStream: new PassThrough().end(),
-            types: []
-        };
+    public async stream(query: string, values: unknown[], options: StreamOptions): Promise<StreamTableData> {
+
+        // @ts-ignore
+        return null;
     }
 
     async getTablesQuery(schemaName: string): Promise<TableQueryResult[]> {
