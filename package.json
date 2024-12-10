@@ -1,0 +1,56 @@
+{
+  "name": "@cubejs-backend/ydb-driver",
+  "description": "Cube.js Yandex database driver",
+  "author": "Cube Dev, Inc.",
+  "version": "1.1.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cube-js/cube.git",
+    "directory": "packages/cubejs-ydb-driver"
+  },
+  "engines": {
+    "node": "^14.0.0 || ^16.0.0 || >=17.0.0"
+  },
+  "files": [
+    "dist/src",
+    "index.js"
+  ],
+  "main": "index.js",
+  "typings": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "rm -rf dist && npm run tsc",
+    "tsc": "tsc",
+    "watch": "tsc -w",
+    "integration": "npm run integration:ydb",
+    "integration:ydb": "jest --verbose dist/test",
+    "lint": "eslint src/* test/* --ext .ts,.js",
+    "lint:fix": "eslint --fix src/* test/* --ext .ts,.js"
+  },
+  "dependencies": {
+    "@cubejs-backend/base-driver": "1.1.2",
+    "@cubejs-backend/schema-compiler": "^1.1.7",
+    "@cubejs-backend/shared": "1.1.2",
+    "generic-pool": "^3.6.0",
+    "ydb-sdk": "^5.8.0"
+  },
+  "devDependencies": {
+    "@cubejs-backend/linter": "^1.0.0",
+    "@cubejs-backend/testing-shared": "1.1.2",
+    "@types/generic-pool": "^3.1.9",
+    "@types/jest": "^27",
+    "jest": "^27",
+    "stream-to-array": "^2.3.0",
+    "testcontainers": "^10.10.4",
+    "typescript": "~5.2.2"
+  },
+  "eslintConfig": {
+    "extends": "../cubejs-linter"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  }
+}
