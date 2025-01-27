@@ -30,6 +30,7 @@
     "@cubejs-backend/base-driver": "1.1.2",
     "@cubejs-backend/schema-compiler": "^1.1.7",
     "@cubejs-backend/shared": "1.1.2",
+    "@yandex-cloud/nodejs-sdk": "^2.7.7",
     "generic-pool": "^3.6.0",
     "ydb-sdk": "^5.8.0"
   },
