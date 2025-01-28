@@ -1,5 +1,15 @@
+const fromExports = require('./dist/src');
 const { YdbDriver } = require('./dist/src/YdbDriver');
-const { YdbDriverQuery } = require('./dist/src/YdbDriverQuery');
 
-module.exports.YdbDriverQuery = YdbDriverQuery;
-module.exports.YdbDriver = YdbDriver;
+/**
+ * After 5 years working with TypeScript, now I know
+ * that commonjs and nodejs require is not compatibility with using export default
+ */
+const toExport = YdbDriver;
+
+// eslint-disable-next-line no-restricted-syntax
+for (const [key, module] of Object.entries(fromExports)) {
+    toExport[key] = module;
+}
+
+module.exports = toExport;

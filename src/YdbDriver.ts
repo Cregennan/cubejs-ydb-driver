@@ -5,16 +5,13 @@ import {
     QueryOptions,
     QuerySchemasResult,
     SchemaStructure,
-    StreamOptions,
-    StreamTableData,
     TableColumn,
     TableQueryResult,
 } from '@cubejs-backend/base-driver';
-import {PassThrough} from "stream";
 import {Driver, getCredentialsFromEnv, ResultSet, RowType, Ydb} from "ydb-sdk";
 import {YdbDriverQuery} from './YdbDriverQuery';
-import Syntax = Ydb.Query.Syntax;
 import {fromPrimitiveYqlType, restoreStringFromUnicode} from "./utils";
+import Syntax = Ydb.Query.Syntax;
 
 const DefaultWaitForDriverReadyTimeMs = 10000;
 
@@ -38,13 +35,12 @@ export class YdbDriver<Config extends YdbDriverConfiguration = YdbDriverConfigur
 
         const authService = getCredentialsFromEnv();
         this.config = config;
-        this.driver = new Driver({connectionString: `${config.endpoint}?database=${config.database}`, authService: authService});
+        const connectionString = `${config.endpoint}?database=/${config.database}`;
+        this.driver = new Driver({connectionString: connectionString, authService: authService});
     }
 
-    public async stream(query: string, values: unknown[], options: StreamOptions): Promise<StreamTableData> {
-
-        // @ts-ignore
-        return null;
+    public async ready(){
+        return this.driver.ready(DefaultWaitForDriverReadyTimeMs);
     }
 
     async getTablesQuery(schemaName: string): Promise<TableQueryResult[]> {
@@ -149,7 +145,7 @@ export class YdbDriver<Config extends YdbDriverConfiguration = YdbDriverConfigur
                     rowMode: RowType.Ydb
                 });
                 const firstSet: ResultSet = (await results.next()).value;
-                return await this.processQueryResult(firstSet);
+                return firstSet ? await this.processQueryResult(firstSet) : [];
             }
         })
     }
@@ -165,14 +161,13 @@ export class YdbDriver<Config extends YdbDriverConfiguration = YdbDriverConfigur
         for await (let row of result.rows) {
             rows.push(row as Ydb.Value);
         }
-        const mapping =  rows.map((row) => {
-            const rowObj : { [p: string]: string }= {};
+        return rows.map((row) => {
+            const rowObj: { [p: string]: string } = {};
             row.items.forEach((item, i) => {
                 // @ts-ignore
                 rowObj[columns[i]] = restoreStringFromUnicode(item.textValue);
             })
             return rowObj;
         });
-        return mapping;
     }
 }

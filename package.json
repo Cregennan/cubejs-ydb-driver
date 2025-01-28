@@ -18,11 +18,11 @@
   "main": "index.js",
   "typings": "dist/src/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run tsc",
+    "build": "rm -rf dist && npm run tsc && cp test/docker-compose.yaml dist/test/docker-compose.yaml",
     "tsc": "tsc",
     "watch": "tsc -w",
     "integration": "npm run integration:ydb",
-    "integration:ydb": "jest --verbose dist/test",
+    "integration:ydb": "jest --verbose dist/test --detectOpenHandles",
     "lint": "eslint src/* test/* --ext .ts,.js",
     "lint:fix": "eslint --fix src/* test/* --ext .ts,.js"
   },
@@ -30,6 +30,7 @@
     "@cubejs-backend/base-driver": "1.1.2",
     "@cubejs-backend/schema-compiler": "^1.1.7",
     "@cubejs-backend/shared": "1.1.2",
+    "@yandex-cloud/nodejs-sdk": "^2.7.7",
     "generic-pool": "^3.6.0",
     "ydb-sdk": "^5.8.0"
   },
@@ -38,6 +39,7 @@
     "@cubejs-backend/testing-shared": "1.1.2",
     "@types/generic-pool": "^3.1.9",
     "@types/jest": "^27",
+    "copyfiles": "^2.4.1",
     "jest": "^27",
     "stream-to-array": "^2.3.0",
     "testcontainers": "^10.10.4",
